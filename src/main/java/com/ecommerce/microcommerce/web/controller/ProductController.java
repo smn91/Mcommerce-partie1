@@ -3,6 +3,8 @@ package com.ecommerce.microcommerce.web.controller;
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -47,6 +49,21 @@ public class ProductController {
         return produitsFiltres;
     }
 
+    @RequestMapping(value = "/AdminProduits", method = RequestMethod.GET)
+
+    public ObjectNode  calculerMargeProduit () {
+
+        Iterable<Product> produits = productDao.findAll();
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+
+        for(Product produit : produits){
+            node.put(produit.toString(), produit.getPrix()-produit.getPrixAchat());
+        }
+
+        return node;
+    }
 
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
