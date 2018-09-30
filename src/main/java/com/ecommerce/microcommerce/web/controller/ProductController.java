@@ -65,6 +65,23 @@ public class ProductController {
         return node;
     }
 
+    @RequestMapping(value = "/ProduitsTri", method = RequestMethod.GET)
+
+    public MappingJacksonValue trierProduitsParOrdreAlphabetique () {
+
+        Iterable<Product> produits = productDao.trierProduitsParOrdreAlphabetique();
+
+        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
+
+        FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
+
+        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+
+        produitsFiltres.setFilters(listDeNosFiltres);
+
+        return produitsFiltres;
+    }
+
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
@@ -77,9 +94,6 @@ public class ProductController {
 
         return produit;
     }
-
-
-
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
